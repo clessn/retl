@@ -11,6 +11,9 @@ On utilise ici le package `renv`, qui permet d'installer localement les packages
 
 ## Comment m'utiliser
 * s'assurer d'avoir installé `renv` avec `install.packages("renv")`
+* exécuter `renv::restore()` pour générer le dossier `renv` et installer les packages nécessaires automatiquement
+* sélectionner l'option y si on vous le demande
+* s'il y a un message d'avertissement comme quoi les versions de R ne concordent pas, ce n'est pas réellement grave. Dans le cadre d'un nouveau projet, vous devriez plutôt installer une version plus récente de votre R.
 * déterminer les packages R qui seront nécessaires
 * s'assurer que RStudio détecte l'environnement renv plutôt que l'environnement global
   * RStudio devrait n'afficher que renv comme package installé.
@@ -28,19 +31,29 @@ docker run my-project
 
 ## Aide-mémoire
 ```R
-renv::init() # créer un environnement renv de toute pièce, insi que le .Rprofile
-# ce n'Est pas nécessaire si un renv.lock et un .Rprofile sont déjà présent
+renv::init() # créer un environnement renv de toute pièce,
+# insi que le .Rprofile
+# ce n'Est pas nécessaire si un renv.lock et un
+# .Rprofile sont déjà présent
 
-# .Rprofile est un fichier qui est détecté par R (et RStudio) et qui exécute le code à chaque démarrage de RStudio (ou d'une console R)
+# .Rprofile est un fichier qui est détecté par
+# R (et RStudio) et qui exécute le code à chaque
+# démarrage de RStudio (ou d'une console R)
 
 renv::snapshot()
 # j'ai installé plusieurs packages et je veux mettre à jour renv.lock
 
 renv::restore()
-# j'ai téléchargé un repo avec un renv.lock et un .Rprofile, et j'aimerais avoir un environnement renv identique à celui du développeur
+# j'ai téléchargé un repo avec un renv.lock et
+# un .Rprofile, et j'aimerais avoir un environnement
+# renv identique à celui du développeur
 
 renv::restore()
-# s'applique ausi si j'ai installé un package sans faire snapshot(), mais que j'aimerais rapidement revenir à l'état précédent
+# s'applique ausi si j'ai installé un package
+# sans faire snapshot(), mais que j'aimerais
+# rapidement revenir à l'état précédent
 
-# si on vous a fourni un renv.lock et rien d'autre (pas de .Rprofile, par exemple), vous pouvez renv::init(), puis remplacer le renv.lock par le vôtre.
+# si on vous a fourni un renv.lock et rien
+# d'autre (pas de .Rprofile, par exemple),
+# vous pouvez renv::init(), puis remplacer le renv.lock par le vôtre.
 ```
