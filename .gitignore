@@ -1,4 +1,4 @@
-
+.env
 renv/library/
 renv/local/
 renv/cellar/

@@ -5,11 +5,80 @@
 * reproductible
 * dockerizable
 
-## Concept d'environnement
+## Nécessités locales
+* [R](https://www.r-project.org/)
+* [python3](https://www.python.org/)
+* [poetry](https://poetry.eustace.io/)
+* [renv](https://rstudio.github.io/renv/index.html)
+
+## Rouler le serveur
+Solution 1:
+```sh
+poetry run python pipeline/server.py
+```
+
+Solution 2, avec variables d'environnement:
+```
+poetry shell
+export MA_VARIABLE1=ma_valeur1
+export MA_VARIABLE2=ma_valeur2
+python pipeline/server.py
+```
+
+## Utilisation
+* Commencez par copier le contenu de ce repo dans un dossier de votre choix.
+* Supprimez si nécessaire les fichiers `code.py` et `code.R` dans le sous-dossier `code`; Ils y sont à titre d'exemple. Notez par contre comment on y extrait les variables d'environnement pour chaque langage. Ce pourrait être pertinent plus tard.
+* en restant dans le sous-dossier `code/`, développez votre pipeline. Vous pouvez utiliser la fonction `print` pour des cas de débogage.
+* Déterminez les valeurs sensibles dont vous aurez besoin et qui ne devraient pas se retrouver dans le repo. Nous construiront une requête à partir de ça.
+* Déterminez le ou les fichiers, dans l'ordre, qui devront être exécutés.
+* Pour tester, vous avez deux choix:
+  * Lancer le server avec poetry et utiliser curl ou un client http (port 8080)
+  * Construire et rouler l'image docker (ou avec le docker-compose) et utiliser curl ou un client http (port 8001)
+
+## Construction de requête (exemple)
+```json
+{
+  // commandes cli à exécuter
+	"commands": ["python3", "code/code.py", "&&",
+							 "Rscript", "code/code.R"],
+	// variables d'environnement à configurer
+  // notez que si vous configurez PATH, sa valeur sera ajoutée au PATH existant du conteneur/environnement
+  "env_vars":
+	{
+		"clhub_username": "admin",
+		"clhub_password": "secret",
+		"clhub_url": "http://localhost:8080"
+	}
+}
+```
+
+## Endpoints du serveur
+* `POST /run`: avec une requête en JSON, lance l'exécution du pipeline, ou retourne 400 si le pipeline roule déjà
+* `GET /status`: retourne l'état du pipeline
+* `GET /history`: retourne l'historique cli des dernières exécutions
+
+Valeur de `status` possible:
+* `running`: le pipeline est en cours d'exécution. On ne peut donc pas lancer d'exécution.
+* `idle`: le pipeline n'a jamais encore roulé. On peut donc lancer une exécution.
+* `error`: le pipeline a rencontré une erreur et est arrêté. Il peut être relancé.
+* `success`: le pipeline a terminé avec succès. Il peut être relancé.
+* `starting`: lorsqu'on lance une exécution, ce statut est retourné par `/run`.
+
+### Recettes CURL pour tester le serveur
+
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"commands": ["Rscript", "code/code.R"], "env_vars": {}}' http://localhost:8080/run > output.json
+
+curl -X GET http://localhost:8080/status > output.json
+
+```
+
+
+## Notes sur RENV
 On utilise ici le package `renv`, qui permet d'installer localement les packages nécessaires et de noter les versions exactes pour  (du mieux qu'on peut) la reproductibilité sur un autre environnement. Il s'agit donc d'une habitude de travail à prendre, soit de "repartir à zéro" pour chaque projet et de déterminer les packages minimaux nécessaires. En partageant nos projets et le fichier `renv.lock`, un autre utilisateur peut installer une version locale de chaque package R de la même version que vous afin de s'assurer que l'exécution du code est similaire. C'est aussi une belle façon de s'assurer que tous ont les bons packages avant de tomber sur une erreur.
 
 
-## Comment m'utiliser
+### Comment m'utiliser
 * s'assurer d'avoir installé `renv` avec `install.packages("renv")`
 * exécuter `renv::restore()` pour générer le dossier `renv` et installer les packages nécessaires automatiquement
 * sélectionner l'option y si on vous le demande
@@ -23,13 +92,8 @@ On utilise ici le package `renv`, qui permet d'installer localement les packages
 * développer votre projet. À chaque fois que vous devez installer un nouveau package ou en retirer un, assurez vous de `renv::snapshot()` pour mettre à jour renv.lock
 * Tester votre projet final en roulant `Rscript main.R`, ce qui roulera votre script en entier (l'équivalent de sourcer). Si votre script fonctionne, on pourra dockeriser et le publier.
 
-## Tester la version dockerizée
-```sh
-docker build -t my-project .
-docker run my-project
-```
 
-## Aide-mémoire
+### Aide-mémoire
 ```R
 renv::init() # créer un environnement renv de toute pièce,
 # insi que le .Rprofile

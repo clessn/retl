@@ -40,7 +40,6 @@ class Pipeline:
             env=self.env,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            universal_newlines=True,
         )
 
     def get_stdout(self):
