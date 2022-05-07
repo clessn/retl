@@ -1,5 +1,5 @@
-# print
-print("hello R")
+username <- Sys.getenv("clhub_username")
+password <- Sys.getenv("clhub_password")
+app_token <- Sys.getenv("app_token")
 
-# extraction de variables d'environnement
-print(Sys.getenv("clhub_username"))
+credentials <- hubr::get_credentials("https://clhub.clessn.cloud/", username, password)
