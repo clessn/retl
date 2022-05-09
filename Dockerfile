@@ -29,13 +29,12 @@ COPY renv.lock .
 RUN Rscript -e 'install.packages("renv")'
 RUN Rscript -e 'renv::restore()'
 RUN mv /usr/local/lib/R/site-library/* /usr/lib/R/library/
-# copy content
-COPY . .
 
+# copy all data and switch user
+COPY . .
 RUN chmod -R 775 .
 RUN chown -R 1000:root .
 USER 1000
 
 # run server
 CMD ["python3", "./pipeline/server.py"]
-#CMD ["Rscript", "main.R"]
