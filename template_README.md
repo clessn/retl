@@ -7,11 +7,13 @@ It was created in order to blah blah blah.
 
 ## Input of the extractor
 <Short intro describing the input, the nature of the data and where it is located in simple words>
+
 Example : The data collected comes from the political parties web sites.  It is mostly **html** files except for QS for which **json** files are collect from the RSS feed.
 
 ### Data
 <Detailed description of the input data>
-Example:
+
+  Example:
   The parties (and their web site urls) collected are:
   * Coalition Avenir Quebec (CAQ): https://coalitionavenirquebec.org/fr/actualites/
   * Parti Libéral du Québec (PLQ): https://plq.org/fr/communiques-de-presse/
@@ -21,12 +23,14 @@ Example:
   
 ### Path (data lake items)
 <Spepcify the path of the data lake (if applicable)>
-Example:
+
+  Example:
   The loader takes all data lake items in the [political_party_press_releases](https://clhub.clessn.cloud/admin/core/lake/?path=political_party_press_releases) path having the following meta data values
 
 ### Meta data used to select the input data in bulk
 <Specify which meta data is being used at which value, in order to bulk select the data from its source>
-Example:
+
+  Example:
   following meta data values
   ```
   {
@@ -40,7 +44,8 @@ Example:
 
 ## Output of the extractor
 <Descripe the output data in simple terms>
-Example:
+
+  Example:
   The output are data lake items which are mostly **html** files except for QS for which **json** files are collect from the RSS feed
 
   The extractor creates all data lake items in the [political_party_press_releases](https://clhub.clessn.cloud/admin/core/lake/?path=political_party_press_releases) path having the following meta data values:
