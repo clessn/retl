@@ -11,7 +11,7 @@ It was created in order to blah blah blah.
 Example : The data collected comes from the political parties web sites.  It is mostly **html** files except for QS for which **json** files are collect from the RSS feed.
 
 ### Data
-<Detailed description of the input data>
+<Provide a detailed description of the input data>
 
   Example:
   The parties (and their web site urls) collected are:
