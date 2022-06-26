@@ -48,7 +48,7 @@ Example : The data collected comes from the political parties web sites.  It is 
 
 ## Output of the extractor
   
-    <Descripe the output data in simple terms>
+  <Descripe the output data in simple terms>
 
   Example:
   The output are data lake items which are mostly **html** files except for QS for which **json** files are collect from the RSS feed
