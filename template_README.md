@@ -9,7 +9,8 @@ It was created in order to blah blah blah.
 
 <Short intro describing the input, the nature of the data and where it is located in simple words>
 ```
-Example : The data collected comes from the political parties web sites.  It is mostly **html** files except for QS for which **json** files are collect from the RSS feed.
+Example : The data collected comes from the political parties web sites.  
+It is mostly **html** files except for QS for which **json** files are collect from the RSS feed.
 ```
 ### Data
   
@@ -36,15 +37,15 @@ Example : The data collected comes from the political parties web sites.  It is 
 ```
   Example:
   following meta data values
-  ```
+  
   {
     "country": "CAN",
     "content_type": "political_party_press_release",
     "storage_class": "lake",
     "province_or_state": "QC"
   }
-  ```
-'''
+  
+```
 
 ## Output of the extractor
   
