@@ -10,6 +10,13 @@
 #                                                                             #
 ###############################################################################
 
+# login to hublot
+    clessnverse::logit(scriptname, "connecting to hub", logger)
+
+    credentials <- hublot::get_credentials(
+        Sys.getenv("HUB3_URL"), 
+        Sys.getenv("HUB3_USERNAME"), 
+        Sys.getenv("HUB3_PASSWORD"))
 
 ###############################################################################
 ########################           Functions            ######################
@@ -121,14 +128,6 @@ tryCatch(
 
     if (!exists("logger") || is.null(logger) || logger == 0) logger <<- clessnverse::loginit(scriptname, opt$log_output, Sys.getenv("LOG_PATH"))
     
-    # login to hublot
-    clessnverse::logit(scriptname, "connecting to hub", logger)
-
-    credentials <- hublot::get_credentials(
-        Sys.getenv("HUB3_URL"), 
-        Sys.getenv("HUB3_USERNAME"), 
-        Sys.getenv("HUB3_PASSWORD"))
-    
     # if your script uses hub 2.0 uncomment the line below
     # clessnhub::connect_with_token(Sys.getenv("HUB_TOKEN"))
     # or 
@@ -162,7 +161,7 @@ tryCatch(
   # Terminate gracefully whether error or not
   finally={
     clessnverse::logit(scriptname, paste("Execution of",  scriptname,"program terminated"), logger)
-    clessnverse::logclose(logger)
+    clessnverse::log_close(logger)
 
     # Cleanup
     closeAllConnections()
