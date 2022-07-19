@@ -7,12 +7,7 @@ app = Celery()
 app.config_from_object("celeryconfig")
 
 
-@app.task
-# TODO: change run_pipeline to run_<my_pipeline_name>
-def run_pipeline(*args, **kwargs):
-    # TODO: adjust command if necessary
-    command = "Rscript code/code.R"
-
+def execute(command, *args, **kwargs):
     # configure environment
     env = os.environ.copy()
     path = kwargs.get("PATH", None)
@@ -32,3 +27,12 @@ def run_pipeline(*args, **kwargs):
 
     if result != 0:
         raise Exception("command failed")
+
+
+# Task definitions
+@app.task
+# TODO: change task1 to a better fitting name if necessary
+def task1(*args, **kwargs):
+    # TODO: adjust command if necessary
+    command = "Rscript code/code.R"
+    execute(command, *args, **kwargs)
