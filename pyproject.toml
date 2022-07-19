@@ -7,6 +7,7 @@ authors = ["Olivier Banville <oli.banville@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 CherryPy = "^18.6.1"
+celery = {extras = ["redis"], version = "^5.2.7"}
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"

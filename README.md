@@ -1,77 +1,39 @@
-# Template de projet R
+# Template de pipeline
 
-## Features
-* réutilisable
-* reproductible
-* dockerizable
 
-## Nécessités locales
+## Nécessités pour tests pré-hublot
 * [R](https://www.r-project.org/)
 * [python3](https://www.python.org/)
 * [poetry](https://poetry.eustace.io/)
 * [renv](https://rstudio.github.io/renv/index.html)
+* docker et docker compose
 
-## Rouler le serveur
-Solution 1:
-```sh
-poetry run python pipeline/server.py
-```
+## Étapes
+* Copiez ce projet dans votre dossier de travail
+* Renommez ce README.md en autre chose, puis renommez template_README.md en README.md
+* Développez vos scripts dans le dossier code/
+* Testez vos scripts en exécutant à partir de la racine de ce projet, profitant de ce fait de poetry (si dev en python) et de renv (si dev en R)
+* Déterminez le nom de votre pipeline (supposons `media_transformer`)
+* Ouvrez le fichier run.py, et notez les commentaires TODO. Appliquez au besoin.
+  * assurez-vous que `command = "Rscript code/code.R"` pointe vers le fichier à exécuter pour cette tâche
+  * Notez que vous pouvez créer des tâches supplémentaires dans le fichier run.py
+  * supprimez les lignes contenant TODO au besoin
 
-Solution 2, avec variables d'environnement:
-```
-poetry shell
-export MA_VARIABLE1=ma_valeur1
-export MA_VARIABLE2=ma_valeur2
-python pipeline/server.py
-```
+## Tests pré-hublot
+* ouvrez le fichier test.py
+  * modifiez `"run.task1"` au besoin.Notez le prefix `run.` qui représente le nom du fichier dans laquelle la tâche se trouve, `run.py`. Si plus haut, vous avez renommé `task1` en `ma_tache`, on devrait alors voir ici `run.ma_tache`
+  * modifiez `queue="my-queue"` pour `queue="media-transformer"`. La queue doit être unique à chaque pipeline. Utilisez donc le nom de votre pipeline.
+* Ouvrez docker-compose.yml, et modifiez `--queues=my-queue` pour `--queues=media-transformer`
 
-## Utilisation
-* Commencez par copier le contenu de ce repo dans un dossier de votre choix.
-* Supprimez si nécessaire les fichiers `code.py` et `code.R` dans le sous-dossier `code`; Ils y sont à titre d'exemple. Notez par contre comment on y extrait les variables d'environnement pour chaque langage. Ce pourrait être pertinent plus tard.
-* en restant dans le sous-dossier `code/`, développez votre pipeline. Vous pouvez utiliser la fonction `print` pour des cas de débogage.
-* Déterminez les valeurs sensibles dont vous aurez besoin et qui ne devraient pas se retrouver dans le repo. Nous construiront une requête à partir de ça.
-* Déterminez le ou les fichiers, dans l'ordre, qui devront être exécutés.
-* Pour tester, vous avez deux choix:
-  * Lancer le server avec poetry et utiliser curl ou un client http (port 8080)
-  * Construire et rouler l'image docker (ou avec le docker-compose) et utiliser curl ou un client http (port 8001)
+La queue permet de déterminer quel conteneur executera la tâche demandée. Deux conteneurs ayant la même queue `my-queue` et la même tâche `task1` exécuteront aléatoirement la même tache. Si ces deux conteneurs ont du code différent pour `task1`, il est alors impossible de déterminer quel code exécuter. D'où l'importance d'une queue unique pour chaque pipeline. Il est aussi possible, pour des pipelines lourds, de multiplier le nombre de conteneurs sous la même queue pour exécuter en parallel.
 
-## Construction de requête (exemple)
-```json
-{
-  // commandes cli à exécuter
-	"commands": ["python3", "code/code.py", "&&",
-							 "Rscript", "code/code.R"],
-	// variables d'environnement à configurer
-  // notez que si vous configurez PATH, sa valeur sera ajoutée au PATH existant du conteneur/environnement
-  "env_vars":
-	{
-		"clhub_username": "admin",
-		"clhub_password": "secret",
-		"clhub_url": "http://localhost:8080"
-	}
-}
-```
+Pour tester votre pipeline sous docker:
+* docker compose build
+* docker compose up
+* votre pipeline est maintenant prêt à être exécuté.
+* dans une autre console, exécutez `poetry run python test.py`
 
-## Endpoints du serveur
-* `POST /run`: avec une requête en JSON, lance l'exécution du pipeline, ou retourne 400 si le pipeline roule déjà
-* `GET /status`: retourne l'état du pipeline
-* `GET /history`: retourne l'historique cli des dernières exécutions
-
-Valeur de `status` possible:
-* `running`: le pipeline est en cours d'exécution. On ne peut donc pas lancer d'exécution.
-* `idle`: le pipeline n'a jamais encore roulé. On peut donc lancer une exécution.
-* `error`: le pipeline a rencontré une erreur et est arrêté. Il peut être relancé.
-* `success`: le pipeline a terminé avec succès. Il peut être relancé.
-* `starting`: lorsqu'on lance une exécution, ce statut est retourné par `/run`.
-
-### Recettes CURL pour tester le serveur
-
-```sh
-curl -X POST -H "Content-Type: application/json" -d '{"commands": ["Rscript", "code/code.R"], "env_vars": {}}' http://localhost:8080/run > output.json
-
-curl -X GET http://localhost:8080/status > output.json
-
-```
+Au besoin, vous pouvez modifier test.py pour tester différentes tâches, ajouter différentes variables d'environnement, etc.
 
 
 ## Notes sur RENV
