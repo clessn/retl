@@ -22,7 +22,7 @@ RUN apt-get install -y \
     && rm -rf /var/lib/apt/lists
 EXPOSE 8080
 COPY pyproject.toml poetry.lock ./
-RUN poetry install --no-dev;
+RUN poetry install;
 
 # setup renv
 COPY renv.lock .
@@ -35,6 +35,3 @@ COPY . .
 RUN chmod -R 775 .
 RUN chown -R 1000:root .
 USER 1000
-
-# run server
-CMD ["python3", "./pipeline/server.py"]
