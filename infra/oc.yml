@@ -9,8 +9,9 @@ kind: DeploymentConfig
 
 metadata:
   labels:
+    app: hublot-pipelines
     pipeline: "true"
-    app: ${APP}
+    redis-user: "true"
   name: ${DEPLOYMENT}
   namespace: ${NAMESPACE}
 
@@ -18,23 +19,20 @@ spec:
   replicas: 1
   revisionHistoryLimit: 1
   selector:
-    app: ${APP}
+    app: hublot-pipelines
     deploymentconfig: ${DEPLOYMENT}
   strategy:
     type: Rolling
   template:
     metadata:
       labels:
-        app: ${APP}
+        app: hublot-pipelines
         deploymentconfig: ${DEPLOYMENT}
     spec:
       containers:
         - name: ${NAME}
           image: ${IMAGE}
           imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-              protocol: TCP
           resources:
             limits:
               cpu: "0.25"
