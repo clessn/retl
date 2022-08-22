@@ -4,6 +4,10 @@ FROM r-base:4.1.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev \
     libcurl4-openssl-dev \
     libxml2-dev \
     libgit2-dev \
